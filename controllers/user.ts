@@ -1,4 +1,4 @@
-import { Context } from "hono";
+import { Context } from "@hono/hono";
 import { User } from "../models/user.ts";
 import * as jose from "jose/index.ts";
 
@@ -83,6 +83,6 @@ export async function loginUser(c: Context) {
   return c.json({ token }, 200);
 }
 
-export async function logoutUser(c: Context) {
+export function logoutUser(c: Context) {
   return c.json({ message: "Logged out successfully" }, 200);
 }
