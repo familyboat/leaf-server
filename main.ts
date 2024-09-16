@@ -7,7 +7,7 @@ const app = new Hono();
 app.use(
   "/*",
   cors({
-    origin: "https://familyboat.github.io/",
+    origin: "https://familyboat.github.io",
   }),
 );
 
