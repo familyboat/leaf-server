@@ -11,5 +11,6 @@ router.post("/logout", logoutUser);
 const userRoutes = new Hono().route("/v1", router);
 userRoutes.use(cors({
   origin: "https://familyboat.github.io",
+  allowHeaders: ["content-type"],
 }));
 export default userRoutes;
