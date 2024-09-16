@@ -8,7 +8,7 @@
   "tasks": {
     "start": "JWT_SECRET=abfqebfiqueb deno run --allow-net --unstable-kv --allow-env --watch main.ts",
     "fmt": "deno fmt --watch **/*.ts",
-    "test": "deno test --unstable-kv --allow-env --allow-net --watch tests/**/*.ts"
+    "test": "JWT_SECRET=abfqebfiqueb deno test --unstable-kv --allow-env --allow-net --watch tests/**/*.ts"
   },
   "compilerOptions": {
     "jsx": "precompile",

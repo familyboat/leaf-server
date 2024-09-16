@@ -26,11 +26,17 @@ async function generateToken(
  * 用户注册
  */
 export async function registerUser(c: Context) {
-  const { username, password } = await c.req.json();
+  const { username, password, confirmPassword } = await c.req.json();
 
-  if (!username || !password) {
+  if (!username || !password || !confirmPassword) {
     return c.json({
-      error: "Username and password are required",
+      error: "Username, password, confirmPassword are required",
+    }, 400);
+  }
+
+  if (password !== confirmPassword) {
+    return c.json({
+      error: "Password must be equal with confirmPassword",
     }, 400);
   }
 

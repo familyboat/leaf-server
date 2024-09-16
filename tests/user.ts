@@ -17,7 +17,11 @@ Deno.test("POST /v1/register - should register a new user", async () => {
   const request = await superoak(userRoutes.fetch);
   await request
     .post("/v1/register")
-    .send({ username: "testuser", password: "testpass" })
+    .send({
+      username: "testuser",
+      password: "testpass",
+      confirmPassword: "testpass",
+    })
     .expect(201)
     .expect("Content-Type", /json/)
     .expect((res) => {
