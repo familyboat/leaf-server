@@ -7,7 +7,7 @@
     "superoak/": "https://deno.land/x/superoak@4.8.1/"
   },
   "tasks": {
-    "start": "JWT_SECRET=abfqebfiqueb deno run --allow-net --unstable-kv --allow-env --watch main.ts",
+    "start": "JWT_SECRET=abfqebfiqueb deno run --allow-net --unstable-kv --allow-env --unstable-ffi --allow-read --allow-ffi --watch main.ts",
     "fmt": "deno fmt --watch **/*.ts",
     "test": "JWT_SECRET=abfqebfiqueb deno test --unstable-kv --allow-env --allow-net --unstable-ffi --allow-read --allow-write --allow-ffi --watch tests/**/*.ts"
   },
