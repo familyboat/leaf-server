@@ -8,7 +8,7 @@ const app = new Hono();
 app.use(
   "/*",
   cors({
-    origin: "https://familyboat.github.io",
+    origin: Deno.env.get("ORIGIN") || "*",
   }),
 );
 
