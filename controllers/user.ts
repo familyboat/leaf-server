@@ -38,7 +38,7 @@ export async function registerUser(c: Context) {
 
   if (password !== confirmPassword) {
     return c.json({
-      error: "Password must be equal with confirmPassword",
+      error: "Password must be equal to confirmPassword",
     }, 400);
   }
 
