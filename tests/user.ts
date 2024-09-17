@@ -11,6 +11,8 @@ async function deleteTestData() {
   await kv.delete(["users", "testuser"]);
 }
 
+let token = "";
+
 Deno.test("POST /v1/register - should register a new user", async () => {
   await deleteTestData();
 
@@ -37,7 +39,17 @@ Deno.test("POST /v1/login - should login a user", async () => {
     .expect(200)
     .expect("Content-Type", /json/)
     .expect((res) => {
+      token = res.body.token;
       assertEquals(typeof res.body.token, "string");
+    });
+});
+
+Deno.test("get /v1/auth/isLogin - should log in", async () => {
+  const request = await superoak(userRoutes.fetch);
+  await request.get("/v1/auth/isLogin").set("Authorization", `Bearer ${token}`)
+    .expect(200).expect("Content-Type", /json/)
+    .expect((res) => {
+      assertEquals(res.body.isLogin, true);
     });
 });
 

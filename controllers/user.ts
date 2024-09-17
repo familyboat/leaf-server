@@ -3,9 +3,9 @@ import { User } from "../models/user.ts";
 import * as jose from "jose/index.ts";
 import * as bcrypt from "bcrypt/mod.ts";
 
-
 const kv = await Deno.openKv();
 const jwtSecret = Deno.env.get("JWT_SECRET");
+const textEncoder = new TextEncoder();
 
 /**
  * 生成 jwt
@@ -18,7 +18,7 @@ async function generateToken(
   const jwt = await new jose.SignJWT(payload).setProtectedHeader({
     alg: "HS256",
   }).setIssuedAt().setExpirationTime(expireIn).sign(
-    new TextEncoder().encode(secret),
+    textEncoder.encode(secret),
   );
 
   return jwt;
@@ -74,7 +74,9 @@ export async function loginUser(c: Context) {
   }
 
   const user = await kv.get<User>(["users", username]);
-  if (!user.value || !(await bcrypt.compareSync(password, user.value.password))) {
+  if (
+    !user.value || !(await bcrypt.compareSync(password, user.value.password))
+  ) {
     return c.json({ error: "Invalid username or password" }, 401);
   }
 
@@ -89,4 +91,25 @@ export async function loginUser(c: Context) {
 
 export function logoutUser(c: Context) {
   return c.json({ message: "Logged out successfully" }, 200);
+}
+
+export async function isLoginUser(c: Context) {
+  const authHeader = c.req.header("Authorization");
+  const token = authHeader?.split(" ")[1];
+  if (token === undefined) {
+    return c.json({ error: "Empty token" }, 400);
+  }
+
+  if (jwtSecret === undefined) {
+    return c.json({ error: "Invalid jwt secret" }, 400);
+  }
+  try {
+    await jose.jwtVerify(
+      token,
+      textEncoder.encode(jwtSecret),
+    );
+    return c.json({ isLogin: true }, 200);
+  } catch (_) {
+    return c.json({ isLogin: false }, 200);
+  }
 }
