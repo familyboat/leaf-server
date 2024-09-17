@@ -1,6 +1,8 @@
 import { Context } from "@hono/hono";
 import { User } from "../models/user.ts";
 import * as jose from "jose/index.ts";
+import * as argon2 from "@felix/argon2";
+
 
 const kv = await Deno.openKv();
 const jwtSecret = Deno.env.get("JWT_SECRET");
@@ -47,10 +49,12 @@ export async function registerUser(c: Context) {
     }, 409);
   }
 
+  const passwordHash = await argon2.hash(password);
+
   const user: User = {
     id: crypto.randomUUID(),
     username,
-    password,
+    password: passwordHash,
   };
 
   await kv.set(["users", username], user);
@@ -70,7 +74,7 @@ export async function loginUser(c: Context) {
   }
 
   const user = await kv.get<User>(["users", username]);
-  if (!user.value || user.value.password !== password) {
+  if (!user.value || !(await argon2.verify(user.value.password, password))) {
     return c.json({ error: "Invalid username or password" }, 401);
   }
 
